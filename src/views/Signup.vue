@@ -3,17 +3,25 @@
     <main>
     <center>
 
-      <h5 class="indigo-text login__title">Please, login into your account</h5>
+      <h5 class="indigo-text login__title">Please, fill the form</h5>
 
       <div class="container">
         <div class="row">
 
-          <form class="col s6 z-depth-1 grey lighten-4 offset-s3" v-on:submit.prevent="login()" method="get" action="/" novalidate>
+          <form class="col s6 z-depth-1 grey lighten-4 offset-s3" v-on:submit.prevent="register()" novalidate>
             <div class="login__form">
 
               <div class='row'>
                 <div class='input-field col s12'>
-                  <input class='validate' type='email' name='email' v-on:keyup="resetField('email')" id='email' v-model="user.email" v-bind:class="{ 'invalid': validation.user.email }" />
+                  <input class='validate' type='text' name='name' id='name' v-on:keyup="resetField('name')" v-model="user.name" v-bind:class="{ 'invalid': validation.user.name }" />
+                  <label for='name'>Enter your name</label>
+                  <span class="helper-text" v-bind:class="{ 'active': validation.user.name }">{{ validation.user.nameText }}</span>
+                </div>
+              </div>
+
+              <div class='row'>
+                <div class='input-field col s12'>
+                  <input class='validate' type='email' name='email' id='email' v-on:keyup="resetField('email')" v-model="user.email" v-bind:class="{ 'invalid': validation.user.email }" />
                   <label for='email'>Enter your email</label>
                   <span class="helper-text" v-bind:class="{ 'active': validation.user.email }">{{ validation.user.emailText }}</span>
                 </div>
@@ -25,15 +33,20 @@
                   <label for='password'>Enter your password</label>
                   <span class="helper-text" v-bind:class="{ 'active': validation.user.password }">{{ validation.user.passwordText }}</span>
                 </div>
-                <label style='float: right;'>
-                  <a class='pink-text' href='#!'><b>Forgot Password?</b></a>
-                </label>
+              </div>
+
+              <div class='row'>
+                <div class='input-field col s12'>
+                  <input class='validate' type='password' name='password_confirmation' id='password_confirmation' v-on:keyup="resetField('password_confirmation')" v-model="user.password_confirmation" v-bind:class="{ 'invalid': validation.user.password_confirmation }" />
+                  <label for='password_confirmation'>Reenter your password</label>
+                  <span class="helper-text" v-bind:class="{ 'active': validation.user.password_confirmation }">{{ validation.user.password_confirmationText }}</span>
+                </div>
               </div>
 
               <br />
               <center>
                 <div class='row'>
-                  <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect indigo'>Login</button>
+                  <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect indigo'>Submit</button>
                 </div>
               </center>
 
@@ -42,7 +55,7 @@
           </form>
         </div>
       </div>
-      <router-link to="/signup">Create account</router-link>
+      <router-link to="/login">Back to login</router-link>
     </center>
   </main>
   </login-theme>
@@ -53,7 +66,7 @@ import LoginTheme from '@/themes/Login'
 import Axios from 'axios'
 
 export default {
-  name: 'login',
+  name: 'signup',
   components: {
     LoginTheme
   },
@@ -64,12 +77,18 @@ export default {
           emailText: '',
           email: false,
           passwordText: '',
-          password: false
+          password: false,
+          nameText: '',
+          name: false,
+          password_confirmationText: '',
+          password_confirmation: false
         }
       },
       user: {
+        name: '',
         email: '',
-        password: ''
+        password: '',
+        password_confirmation: ''
       }
     }
   },
@@ -85,14 +104,21 @@ export default {
       }
 
     },
-    login () {
+    register () {
       this.validation.user.email = false;
       this.validation.user.emailText = '';
       this.validation.user.password = false;
       this.validation.user.passwordText = '';
-      Axios.post('http://127.0.0.1:8000/api/login', {
+      this.validation.user.name = false;
+      this.validation.user.nameText = '';
+      this.validation.user.password_confirmation = false;
+      this.validation.user.password_confirmationText = '';
+
+      Axios.post('http://127.0.0.1:8000/api/register', {
+        name: this.user.name,
         email: this.user.email,
         password: this.user.password,
+        password_confirmation: this.user.password_confirmation,
       })
       .then(response => {
         // eslint-disable-next-line
@@ -113,6 +139,16 @@ export default {
             if (key == 'password') {
               this.validation.user.password = true;
               this.validation.user.passwordText = value[0];
+            }
+
+            if (key == 'name') {
+              this.validation.user.name = true;
+              this.validation.user.nameText = value[0];
+            }
+
+            if (key == 'password_confirmation') {
+              this.validation.user.password_confirmation = true;
+              this.validation.user.password_confirmationText = value[0];
             }
           }
         }
@@ -138,7 +174,6 @@ export default {
   width: 100%;
   display: inline-block;
 }
-
 .helper-text {
   text-align: left;
 }

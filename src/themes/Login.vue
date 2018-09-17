@@ -14,6 +14,19 @@ export default {
   name: 'Login',
   components: {
 
+  },
+  created () {
+    this.verifyUserLogged();
+  },
+  methods: {
+    verifyUserLogged () {
+      if (sessionStorage.getItem('user')) {
+        let getSessionUser = JSON.parse(sessionStorage.getItem('user'));
+        if (getSessionUser.token) {
+          this.$router.push('/');
+        }
+      }
+    }
   }
 }
 </script>

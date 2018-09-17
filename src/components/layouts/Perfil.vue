@@ -8,7 +8,7 @@
                 <img :src="image" alt="" class="circle responsive-img"> <!-- notice the "circle" class -->
               </div>
               <div class="col s8">
-                <h5>Vinicius</h5>
+                <h5 v-if="nameUser">{{nameUser}}</h5>
                 <span class="black-text">
                   Add the "circle" class to
                 </span>
@@ -33,6 +33,6 @@
 <script>
 export default {
   name: 'Perfil',
-  props: ['image'],
+  props: ['image','nameUser'],
 }
 </script>

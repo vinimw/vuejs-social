@@ -10,7 +10,7 @@
       <div class="container">
         <div class="row">
             <div class="col s4">
-              <perfil image="https://dummyimage.com/100x100/000/fff" />
+              <perfil :nameUser="nameUser" image="https://dummyimage.com/100x100/000/fff" />
               <perfil />
             </div>
             <div class="col s8">
@@ -42,6 +42,26 @@ export default {
     FooterVue,
     Perfil,
     MenuLinks
+  },
+  created () {
+    this.verifyUserLogged();
+  },
+  data () {
+    return {
+      userLogged: false,
+      nameUser: ''
+    }
+  },
+  methods: {
+    verifyUserLogged () {
+      if (!sessionStorage.getItem('user')) {
+        sessionStorage.clear();
+        this.$router.push('/login');
+      } else {
+        let getSessionUser = JSON.parse(sessionStorage.getItem('user'));
+        this.nameUser = getSessionUser.name;
+      }
+    }
   }
 }
 </script>
